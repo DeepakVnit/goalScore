@@ -44,3 +44,12 @@ def get_match_goals(request):
             return Response(match_goals.data)
         else:
             return Response([])
+
+def get_goals():
+    match_id = 1
+    goals = Goals.objects.filter(match_id=match_id)
+    match_goals = goalSerializers(goals, many=True)
+    if match_goals:
+        return match_goals.data
+    else:
+        return []

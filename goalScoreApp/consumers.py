@@ -1,10 +1,8 @@
 from channels import Group
-from .views import get_goals
 
 def ws_message(message):
     print(message.content['text'])
-    data = get_goals()
-    Group('users').send({'text': data})
+    Group('users').send({'text': "message"})
 
 def ws_connect(message):
     Group('users').add(message.reply_channel)

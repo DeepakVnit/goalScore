@@ -53,6 +53,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'goalScore.urls'
+# SECURE_SSL_REDIRECT = True
 
 TEMPLATES = [
     {

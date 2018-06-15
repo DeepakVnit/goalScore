@@ -28,6 +28,7 @@ class Teams(models.Model):
 class Players(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=100, null=False)
+    age = models.IntegerField(default=0)
     team = models.ForeignKey(Teams, on_delete=models.CASCADE)
     rating = models.IntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     position = models.CharField(max_length=100, null=True)
@@ -42,11 +43,14 @@ class Matches(models.Model):
     id = models.AutoField(primary_key=True)
     team1 = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='team1')
     team2 = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='team2')
+    captain_team1 = models.ForeignKey(Players, on_delete=models.CASCADE, related_name='Captain_team1')
+    captain_team2 = models.ForeignKey(Players, on_delete=models.CASCADE, related_name='Captain_team2')
     score1 = models.IntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     score2 = models.IntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     penality1 = models.IntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     penality2 = models.IntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     venue = models.CharField(max_length=100, null=False)
+    result = models.CharField(max_length=100, null=True)
     gametime = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
     created_at = models.DateTimeField(default=datetime.now)
@@ -54,6 +58,18 @@ class Matches(models.Model):
     def __str__(self):
         return self.team1.name + " vs " + self.team2.name + " (" + str(datetime.date(self.gametime)) + ")"
 
+class Cards(models.Model):
+    CARD_TYPE = (
+        ('Yellow', 'Yellow'),
+        ('Red', 'Red'),
+    )
+    id = models.AutoField(primary_key=True)
+    match = models.ForeignKey(Matches, on_delete=models.CASCADE, related_name='match')
+    card_type = models.CharField(max_length=15, choices=CARD_TYPE, default="Yellow")
+    player = models.ForeignKey(Players, on_delete=models.CASCADE, related_name='player')
+    time = models.IntegerField(default=0, validators=[MaxValueValidator(140), MinValueValidator(0)])
+    updated_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(default=datetime.now)
 
 class Goals(models.Model):
     GOAL_STATUS = (
@@ -82,8 +98,6 @@ def update_match_score(sender, instance, **kwargs):
     time = instance.time
     allowed = instance.allowed
     match_score = Matches.objects.filter(id=match_id)
-    import pdb;
-    pdb.set_trace()
     print("Receiver pre_save : {}- {} - {}: {}".format(match_id, scorer_id, match_score[0].team1.id,
                                                        match_score[0].team2.id))
 

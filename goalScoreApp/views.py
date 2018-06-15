@@ -4,18 +4,16 @@ from rest_framework.response import Response
 from .models import Matches
 from .models import Teams
 from .models import Goals
-from .models import Players
-from .serilaizers import matchSerializers
-from .serilaizers import teamSerializers
-from .serilaizers import goalSerializers
-from .serilaizers import playerSerializers
+from .serilaizers import MatchSerializers
+from .serilaizers import TeamSerializers
+from .serilaizers import GoalSerializers
 
 
 @api_view(['GET'])
 def matches(request):
     if request.method == 'GET':
         matches = Matches.objects.all()
-        match = matchSerializers(matches, many=True)
+        match = MatchSerializers(matches, many=True)
         if match:
             return Response(match.data)
         else:
@@ -26,7 +24,7 @@ def matches(request):
 def teams(request):
     if request.method == 'GET':
         matches = Teams.objects.all()
-        match = teamSerializers(matches, many=True)
+        match = TeamSerializers(matches, many=True)
         if match:
             return Response(match.data)
         else:
@@ -39,17 +37,8 @@ def get_match_goals(request):
     if request.method == 'GET':
         match_id = request.GET.get('match_id', None)
         goals = Goals.objects.filter(match_id=match_id)
-        match_goals = goalSerializers(goals, many=True)
+        match_goals = GoalSerializers(goals, many=True)
         if match_goals:
             return Response(match_goals.data)
         else:
             return Response([])
-
-def get_goals():
-    match_id = 1
-    goals = Goals.objects.filter(match_id=match_id)
-    match_goals = goalSerializers(goals, many=True)
-    if match_goals:
-        return match_goals.data
-    else:
-        return []

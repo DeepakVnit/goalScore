@@ -22,6 +22,9 @@ from goalScoreApp import views
 urlpatterns = [
                   path('admin/', admin.site.urls),
                   path('matches/', views.matches),
+                  path('match/', views.match),
                   path('teams/', views.teams),
-                  path('match_goals/', views.get_match_goals),
+                  path('team/', views.team),
+                  path('players/', views.players),
+                  path('player/', views.player),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

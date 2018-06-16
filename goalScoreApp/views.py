@@ -36,7 +36,7 @@ def team(request):
 @api_view(['GET'])
 def matches(request):
     if request.method == 'GET':
-        matches = Matches.objects.all()
+        matches = Matches.objects.all().order_by('gametime')
         match = MatchSerializers(matches, many=True)
         if match:
             return Response(match.data)

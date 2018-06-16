@@ -40,7 +40,7 @@ class Players(models.Model):
 
 
 class Matches(models.Model):
-    POSSIBLE_RESULT = (('WON','WON'), ('LOST','LOST'), ('DRAW','DRAW'))
+    POSSIBLE_RESULT = (('WON', 'WON'), ('LOST', 'LOST'), ('DRAW', 'DRAW'))
     id = models.AutoField(primary_key=True)
     team1 = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='team1')
     team2 = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='team2')
@@ -59,6 +59,7 @@ class Matches(models.Model):
     def __str__(self):
         return self.team1.name + " vs " + self.team2.name + " (" + str(datetime.date(self.gametime)) + ")"
 
+
 class Cards(models.Model):
     CARD_TYPE = (
         ('Yellow', 'Yellow'),
@@ -71,6 +72,7 @@ class Cards(models.Model):
     time = models.IntegerField(default=0, validators=[MaxValueValidator(140), MinValueValidator(0)])
     updated_at = models.DateTimeField(default=datetime.now)
     created_at = models.DateTimeField(default=datetime.now)
+
 
 class Goals(models.Model):
     GOAL_STATUS = (
@@ -102,7 +104,7 @@ def create_goal_update_score(sender, instance, **kwargs):
 
     if allowed == 'Allowed' and kwargs['created']:
         if team.name == match_score.team1.name:
-            match_score.score1+=1
+            match_score.score1 += 1
         elif team.name == match_score.team2.name:
             match_score.score2 += 1
         match_score.save()

@@ -85,6 +85,7 @@ class Goals(models.Model):
     match = models.ForeignKey(Matches, on_delete=models.CASCADE, default=1)
     team = models.ForeignKey(Teams, on_delete=models.CASCADE, default=1)
     allowed = models.CharField(max_length=15, choices=GOAL_STATUS, default="Allowed")
+    owngoal = models.BooleanField(default=False)
     updated_at = models.DateTimeField(default=datetime.now)
     created_at = models.DateTimeField(default=datetime.now)
 
@@ -92,19 +93,16 @@ class Goals(models.Model):
         return self.scorer.name
 
 
-@receiver(signals.pre_save, sender=Goals)
-def update_match_score(sender, instance, **kwargs):
+@receiver(signals.post_save, sender=Goals)
+def create_goal_update_score(sender, instance, **kwargs):
     match_id = instance.match_id
-    scorer_id = instance.scorer_id
-    time = instance.time
     allowed = instance.allowed
-    match_score = Matches.objects.filter(id=match_id)
-    print("Receiver pre_save : {}- {} - {}: {}".format(match_id, scorer_id, match_score[0].team1.id,
-                                                       match_score[0].team2.id))
+    team = instance.team
+    match_score = Matches.objects.get(id=match_id)
 
-    # check if Goal is already created
-    goals = Goals.objects.filter(match_id=match_id, scorer_id=scorer_id, time=time)
-    if allowed == 'Allowed':
-        pass
-    else:
-        pass
+    if allowed == 'Allowed' and kwargs['created']:
+        if team.name == match_score.team1.name:
+            match_score.score1+=1
+        elif team.name == match_score.team2.name:
+            match_score.score2 += 1
+        match_score.save()

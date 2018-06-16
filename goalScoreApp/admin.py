@@ -51,7 +51,8 @@ class GoalsAdmin(admin.ModelAdmin):
         'assist_name',
         'match',
         'allowed',
-        'team_name'
+        'team_name',
+        'owngoal'
     )
     ordering = ('id',)
 

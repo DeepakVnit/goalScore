@@ -131,5 +131,25 @@ def groupStanding(request):
 
         for team in teams:
             group_standing[team.group].append({team.name: standing[team.name]})
+
     res = collections.OrderedDict(sorted(group_standing.items()))
-    return Response(res)
+    format_response = format_result(res)
+
+    return Response(format_response)
+
+
+def format_result(input):
+    output = []
+
+    for groupName, members  in input.items():
+        group_standing = {}
+        group_standing["GroupName"] = groupName
+        group_standing["GroupMembers"] = []
+        for member in members:
+            for teamName, standing in member.items():
+                member_standing = {}
+                member_standing["Name"] = teamName
+                member_standing.update(standing)
+                group_standing["GroupMembers"].append(member_standing)
+        output.append(group_standing)
+    return output

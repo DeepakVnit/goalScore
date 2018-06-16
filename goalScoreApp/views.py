@@ -120,4 +120,10 @@ def groupStanding(request):
             standing[team1.name]["Pts"] = (standing[team1.name]["W"]*3) + (standing[team1.name]["D"]*1)
             standing[team2.name]["Pts"] = (standing[team2.name]["W"] * 3) + (standing[team2.name]["D"] * 1)
 
-    return Response(standing)
+        # import pdb;pdb.set_trace()
+        group_standing = {"A": [], "B": [], "C": [], "D": [], "E": [], "F": [], "G": [], "H": []}
+        for team in teams:
+            group_standing[team.group].append({team.name: standing[team.name]})
+
+
+    return Response(group_standing)

@@ -27,4 +27,5 @@ urlpatterns = [
                   path('team/', views.team),
                   path('players/', views.players),
                   path('player/', views.player),
+                  path('standing/', views.groupStanding),
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

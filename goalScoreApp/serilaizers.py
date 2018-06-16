@@ -14,10 +14,9 @@ class TeamSerializers(serializers.ModelSerializer):
 
 class PlayerSerializers(serializers.ModelSerializer):
     team = TeamSerializers(read_only=True)
-
     class Meta:
         model = Players
-        fields = ('id', 'name', 'team', 'rating', 'position')
+        fields = ('id', 'name', 'team', 'rating', 'position', 'team_class_name')
 
 
 class GoalSerializers(serializers.ModelSerializer):
@@ -46,4 +45,4 @@ class MatchSerializers(serializers.ModelSerializer):
     class Meta:
         model = Matches
         fields = (
-        'id', 'team1', 'team2', 'score1', 'score2', 'penality1', 'penality2', 'goal_scored', 'gametime', 'venue', 'team1_captain', 'team2_captain', 'cards_given')
+        'id','result', 'team1', 'team2', 'score1', 'score2', 'penality1', 'penality2', 'goal_scored', 'gametime', 'venue', 'team1_captain', 'team2_captain', 'cards_given')

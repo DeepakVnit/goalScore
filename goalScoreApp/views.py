@@ -77,3 +77,47 @@ def player(request):
                     return Response(playerData.data)
 
     return Response([])
+
+@api_view(['GET'])
+def groupStanding(request):
+    if request.method == 'GET':
+        standing = {}
+        completed_status = Matches.POSSIBLE_RESULT
+        teams = Teams.objects.all()
+        for team in teams:
+            standing[team.name] = {"MP":0, "W":0, "L":0, "D":0, "GF":0, "GA":0, "GD": 0, "Pts": 0}
+
+        matches_played = Matches.objects.filter(result__in=[x[0] for x in completed_status]).prefetch_related('team1', 'team2')
+        for match in matches_played:
+            team1 = match.team1
+            team2 = match.team2
+            result = match.result
+
+            standing[team1.name]["MP"] += 1
+            standing[team2.name]["MP"] += 1
+
+            standing[team1.name]["GF"] += match.score1
+            standing[team1.name]["GA"] += match.score2
+
+            standing[team2.name]["GF"] += match.score2
+            standing[team2.name]["GA"] += match.score1
+
+            standing[team1.name]["GD"] = standing[team1.name]["GF"] - standing[team1.name]["GA"]
+            standing[team2.name]["GD"] = standing[team2.name]["GF"] - standing[team2.name]["GA"]
+
+            possible_result = [x[0] for x in Matches.POSSIBLE_RESULT]
+            if result == possible_result[0]: #WON
+                standing[team1.name]["W"] += 1
+                standing[team2.name]["L"] += 1
+
+            elif result == possible_result[1]: #LOST
+                standing[team2.name]["W"] += 1
+                standing[team1.name]["L"] += 1
+            else: #DRAW
+                standing[team1.name]["D"] += 1
+                standing[team2.name]["D"] += 1
+
+            standing[team1.name]["Pts"] = (standing[team1.name]["W"]*3) + (standing[team1.name]["D"]*1)
+            standing[team2.name]["Pts"] = (standing[team2.name]["W"] * 3) + (standing[team2.name]["D"] * 1)
+
+    return Response(standing)

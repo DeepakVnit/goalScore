@@ -40,6 +40,7 @@ class Players(models.Model):
 
 
 class Matches(models.Model):
+    POSSIBLE_RESULT = (('WON','WON'), ('LOST','LOST'), ('DRAW','DRAW'))
     id = models.AutoField(primary_key=True)
     team1 = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='team1')
     team2 = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='team2')
@@ -50,7 +51,7 @@ class Matches(models.Model):
     penality1 = models.IntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     penality2 = models.IntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     venue = models.CharField(max_length=100, null=False)
-    result = models.CharField(max_length=100, null=True)
+    result = models.CharField(max_length=100, choices=POSSIBLE_RESULT, default=" ")
     gametime = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
     created_at = models.DateTimeField(default=datetime.now)

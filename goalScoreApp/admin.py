@@ -15,6 +15,7 @@ from .models import Players
 class MatchesAdmin(admin.ModelAdmin):
     list_display = (
         'id',
+        'result',
         'team1',
         'team2',
         'score1',

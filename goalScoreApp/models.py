@@ -102,7 +102,7 @@ class Goals(models.Model):
 def create_goal_update_score(sender, instance, **kwargs):
     match_id = instance.match_id
     allowed = instance.allowed
-    team = instance.team
+    team = instance.awarded_team
     match_score = Matches.objects.get(id=match_id)
 
     if allowed == 'Allowed' and kwargs['created']:

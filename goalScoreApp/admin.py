@@ -3,6 +3,7 @@ from .models import Teams
 from .models import Matches
 from .models import Goals
 from .models import Players
+from .models import Cards
 
 
 # admin.site.register(Teams)
@@ -76,11 +77,27 @@ class GoalsAdmin(admin.ModelAdmin):
 @admin.register(Players)
 class PlayersAdmin(admin.ModelAdmin):
     list_display = (
-        'team_id',
+        'team',
         'name',
         'id',
         'rating',
         'position',
     )
-    ordering = ('team_id', 'name')
+    ordering = ('team', 'name')
     search_fields = ['name']
+
+
+@admin.register(Cards)
+class GoalsAdmin(admin.ModelAdmin):
+    list_display = (
+        'id',
+        'match',
+        'card_type',
+        'player',
+        'time'
+    )
+
+    ordering = ('id',)
+
+    search_fields = ['player__name']
+    raw_id_fields = ['player',]

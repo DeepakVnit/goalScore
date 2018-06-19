@@ -41,6 +41,7 @@ class Players(models.Model):
 
 class Matches(models.Model):
     POSSIBLE_RESULT = (('WON', 'WON'), ('LOST', 'LOST'), ('DRAW', 'DRAW'))
+    MATCH_STATUS = (('LIVE', 'LIVE'), ('HALF TIME', 'HALF TIME'), ('FULL TIME', 'FULL TIME'))
     id = models.AutoField(primary_key=True)
     team1 = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='team1')
     team2 = models.ForeignKey(Teams, on_delete=models.CASCADE, related_name='team2')
@@ -51,6 +52,7 @@ class Matches(models.Model):
     penality1 = models.IntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     penality2 = models.IntegerField(default=0, validators=[MaxValueValidator(10), MinValueValidator(0)])
     venue = models.CharField(max_length=100, null=False)
+    status = models.CharField(max_length=20, choices=MATCH_STATUS, default=None)
     result = models.CharField(max_length=100, choices=POSSIBLE_RESULT, default=" ")
     gametime = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
@@ -85,7 +87,8 @@ class Goals(models.Model):
     assist = models.ForeignKey(Players, on_delete=models.CASCADE, related_name='assist')
     time = models.IntegerField(default=0, validators=[MaxValueValidator(140), MinValueValidator(0)])
     match = models.ForeignKey(Matches, on_delete=models.CASCADE, default=1)
-    team = models.ForeignKey(Teams, on_delete=models.CASCADE, default=1)
+    awarded_team = models.ForeignKey(Teams, on_delete=models.CASCADE, default=1)
+    is_penalty = models.BooleanField(default=False)
     allowed = models.CharField(max_length=15, choices=GOAL_STATUS, default="Allowed")
     owngoal = models.BooleanField(default=False)
     updated_at = models.DateTimeField(default=datetime.now)

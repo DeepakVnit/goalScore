@@ -28,4 +28,8 @@ urlpatterns = [
                   path('players/', views.players),
                   path('player/', views.player),
                   path('standing/', views.groupStanding),
+                  path('upcoming_matches/', views.upcoming_match),
+                  path('todays_matches/', views.todays_match),
+                  path('recent_matches/', views.recent_match),
+
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

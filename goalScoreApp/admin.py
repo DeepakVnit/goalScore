@@ -51,8 +51,9 @@ class GoalsAdmin(admin.ModelAdmin):
         'assist_name',
         'match',
         'allowed',
-        'team_name',
-        'owngoal'
+        'awarded_team_name',
+        'owngoal',
+        'is_penalty'
     )
     ordering = ('id',)
 
@@ -62,14 +63,14 @@ class GoalsAdmin(admin.ModelAdmin):
     def assist_name(self, obj):
         return obj.assist.name
 
-    def team_name(self, obj):
-        return obj.team.name
+    def awarded_team_name(self, obj):
+        return obj.awarded_team.name
 
     def match_id(self, obj):
         return obj.match.id
 
     search_fields = ['scorer__name']
-    raw_id_fields = ['scorer', 'assist', 'match', 'team']
+    raw_id_fields = ['scorer', 'assist', 'match',]
 
 
 @admin.register(Players)

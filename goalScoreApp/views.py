@@ -1,5 +1,5 @@
 import collections
-
+from datetime import date
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
@@ -141,15 +141,53 @@ def groupStanding(request):
 def format_result(input):
     output = []
 
-    for groupName, members  in input.items():
+    for groupName, members in input.items():
         group_standing = {}
         group_standing["GroupName"] = groupName
         group_standing["GroupMembers"] = []
+
         for member in members:
             for teamName, standing in member.items():
                 member_standing = {}
                 member_standing["Name"] = teamName
                 member_standing.update(standing)
                 group_standing["GroupMembers"].append(member_standing)
+
+        sorted_group_standing = sorted(group_standing["GroupMembers"], key=lambda k: (k['Pts'], k['GF'],), reverse=True)
+        group_standing["GroupMembers"] = sorted_group_standing
         output.append(group_standing)
     return output
+
+
+@api_view(['GET'])
+def todays_match(request):
+    if request.method == 'GET':
+        today = date.today()
+        match = Matches.objects.filter(gametime__contains=today)
+        matchData = MatchSerializers(match, many=True)
+        if matchData:
+            return Response(matchData.data)
+
+    return Response([])
+
+
+@api_view(['GET'])
+def recent_match(request):
+    if request.method == 'GET':
+        match = Matches.objects.filter(result__isnull=False).order_by('-gametime')[:3]
+        matchData = MatchSerializers(match, many=True)
+        if matchData:
+            return Response(matchData.data)
+
+    return Response([])
+
+
+@api_view(['GET'])
+def upcoming_match(request):
+    if request.method == 'GET':
+        match = Matches.objects.filter(result__isnull=True).order_by('gametime')[:3]
+        matchData = MatchSerializers(match, many=True)
+        if matchData:
+            return Response(matchData.data)
+
+    return Response([])

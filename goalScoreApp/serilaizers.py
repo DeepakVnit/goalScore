@@ -25,7 +25,7 @@ class GoalSerializers(serializers.ModelSerializer):
 
     class Meta:
         model = Goals
-        fields = ('id', 'scorer', 'assist', 'time', 'allowed')
+        fields = ('id', 'scorer', 'assist', 'time', 'allowed', 'awarded_team', 'is_penalty', 'owngoal')
 
 class CardSerializers(serializers.ModelSerializer):
     player = PlayerSerializers(read_only=True)
